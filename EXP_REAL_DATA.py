@@ -27,6 +27,7 @@ if __name__ == "__main__":
         freq=DATASETS[args.dataset]["freq"],
         pipeline_name=pipeline_name,
         base_dir_name=pathlib.Path(__file__).parent.absolute(),
+        df_name=args.dataset
     )
 
     # kwargs could contain:
