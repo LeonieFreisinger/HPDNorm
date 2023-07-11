@@ -77,7 +77,7 @@ def generate_any(
         heteroscedasticity = 0
         structural_break_mean = 0
         structural_break_variance = 1
-    elif heterogeneity_type == "heteroscedascity":
+    elif heterogeneity_type == "heteroscedasticity":
         offset = 0
         amplitude = 1
         trend_gradient = 0
@@ -97,7 +97,7 @@ def generate_any(
             offset = np.random.uniform(0, sample_upper_limit * 10 / 3)
         elif heterogeneity_type == "trend":
             trend_gradient = np.random.uniform(0, sample_upper_limit) + 2
-        elif heterogeneity_type == "heteroscedascity":
+        elif heterogeneity_type == "heteroscedasticity":
             heteroscedasticity = np.random.uniform(0, sample_upper_limit * 2) + 1
         elif heterogeneity_type == "structural_break":
             structural_break_mean = np.random.uniform(0, sample_upper_limit * 2) + 1

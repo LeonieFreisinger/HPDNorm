@@ -79,6 +79,21 @@ NP_FNN_sw_wb = (
         "ar_layers": [128],
     }
 )
+NP_FNN_sw = (
+    {  # NeuralProphetModel with only autoregression with 1 hidden layer enabled used for window-based normalization.
+        "n_forecasts": 1,
+        "epochs": 30,
+        "global_normalization": True,
+        "normalize": "off",
+        "yearly_seasonality": False,
+        "weekly_seasonality": False,
+        "daily_seasonality": False,
+        "n_changepoints": 0,
+        "growth": "off",
+        "n_lags": 2,
+        "ar_layers": [128],
+    }
+)
 
 # TorchProphetModel pre-defined params
 TP = {  # TorchProphetModel with global trend and global seasonality enabled.
@@ -188,6 +203,7 @@ PARAMS = {
         "NP": NP,
         "NP_localST": NP_localST,
         "NP_FNN": NP_FNN,
+        "NP_FNN_sw": NP_FNN_sw,
         "NP_FNN_wb": NP_FNN_wb,
         "NP_FNN_sw_wb": NP_FNN_sw_wb,
     },

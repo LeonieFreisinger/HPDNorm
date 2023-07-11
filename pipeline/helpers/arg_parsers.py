@@ -58,7 +58,7 @@ def get_synth_data_arg_parser():
         required=False,
         default="amplitude",
         help="Heterogeneity type",
-        choices=["amplitude", "offset", "trend", "heteroscedacity", "structural_break"],
+        choices=["amplitude", "offset", "trend", "heteroscedasticity", "structural_break"],
     )
     parser.add_argument(
         "--sample_upper_limit",
