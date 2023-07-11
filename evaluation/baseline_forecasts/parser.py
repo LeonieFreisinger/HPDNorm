@@ -39,7 +39,7 @@ def extract_args_from_name(name):
 def parse_synthetic_data_files():
     parent_dir = pathlib.Path(__file__).parent.parent.absolute()
     res_path = os.path.join(
-        pathlib.Path(__file__).parent.parent.parent.absolute(), "results"
+        pathlib.Path(__file__).parent.parent.parent.absolute(), "results_no_scaler"
     )
 
     dfs_dict = {}
@@ -49,9 +49,6 @@ def parse_synthetic_data_files():
         if os.path.isdir(exp_path):
             results_csv_path = os.path.join(exp_path, "data.csv")
             if os.path.isfile(results_csv_path):
-                # copy file to separate folder
-                # target_exp_path = os.path.join(save_path, f"{exp}_results.csv")
-                # copyfile(results_csv_path, target_exp_path)
 
                 # read csv
                 df = pd.read_csv(results_csv_path)

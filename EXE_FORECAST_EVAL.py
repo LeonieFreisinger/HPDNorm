@@ -3,7 +3,7 @@ from evaluation.forecast_no_scaler.process_no_scaler import (
     calculate_average_MASE, calculate_scaled_aggregate_MAE, plot_sampled_error)
 
 if __name__ == "__main__":
-    # merge_results()
+    merge_results()
     calculate_scaled_aggregate_MAE()
     calculate_average_MASE()
     plot_sampled_error()
