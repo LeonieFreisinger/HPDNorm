@@ -9,9 +9,6 @@ import plotly.io as pio
 import plotly.subplots as sp
 import seaborn as sns
 
-from evaluation.forecast_no_scaler.utils.params import (
-    get_all_model_params_list, get_het_strength, get_heterogeneity_groups)
-
 
 def calculate_scaled_aggregate_MAE():
     parent_dir = pathlib.Path(__file__).parent.parent.absolute()
@@ -129,13 +126,14 @@ def plot_sampled_error():
         "RNN": "#b15928",
         "TF": "#a6cee3",
         "LGBM": "#b2df8a",
+        "NP_FNN_sw": "#ffc0cb",
     }
     line_dict = {
-        "amplitude": 2,
-        "offset": 2,
-        "trend": 3,
+        "amplitude": 2.5,
+        "offset": 2.5,
+        "trend": 2.5,
         "heteroscedasticity": 2.5,
-        "structural_break": 3,
+        "structural_break": 2.5,
     }
 
     for metric, df in [
@@ -155,6 +153,7 @@ def plot_sampled_error():
             show_legend = i == 0
             for model_id in group["model_id"].unique():
                 subgroup = group[group["model_id"] == model_id]
+                subgroup = subgroup.sort_values("het_strength")
                 fig.add_trace(
                     go.Scatter(
                         x=subgroup["het_strength"],
@@ -188,9 +187,72 @@ def plot_sampled_error():
                 y=0.99,  # This sets the y position of the legend
                 traceorder="normal",
                 font=dict(family="sans-serif", size=12, color="black"),
-                # bgcolor="LightSteelBlue",
-                # bordercolor="Black",
-                # borderwidth=2
             )
         )
-        fig.write_image(os.path.join(figure_dir, f"{metric}_faceted_line_charts.png"))  # Save the figure
+        fig.write_image(
+            os.path.join(figure_dir, f"{metric}_faceted_line_charts.png")
+        )  # Save the figure
+
+
+def find_first_exceeding_threshold():
+    parent_dir = pathlib.Path(__file__).parent.parent.absolute()
+    tables_dir = os.path.join(parent_dir, "tables")
+
+    # Load the same data
+    scaled_agg_MAE_no_scaler = pd.read_csv(
+        os.path.join(tables_dir, "scaled_agg_MAE_no_scaler.csv"), index_col=0
+    )
+    scaled_agg_MAE_no_scaler.reset_index(inplace=True)
+    averge_MASE_no_scaler = pd.read_csv(
+        os.path.join(tables_dir, "average_MASE_no_scaler.csv"), index_col=0
+    )
+    averge_MASE_no_scaler.reset_index(inplace=True)
+
+    # Do the same preprocessing
+    scaled_agg_MAE_no_scaler[
+        ["model_id", "het_type", "het_strength"]
+    ] = scaled_agg_MAE_no_scaler["exp_id"].apply(split_words)
+    scaled_agg_MAE_no_scaler.drop(columns="exp_id", inplace=True)
+    scaled_agg_MAE_no_scaler["het_strength"] = pd.to_numeric(
+        scaled_agg_MAE_no_scaler["het_strength"]
+    )
+    averge_MASE_no_scaler[
+        ["model_id", "het_type", "het_strength"]
+    ] = averge_MASE_no_scaler["exp_id"].apply(split_words)
+    averge_MASE_no_scaler.drop(columns="exp_id", inplace=True)
+    averge_MASE_no_scaler["het_strength"] = pd.to_numeric(
+        averge_MASE_no_scaler["het_strength"]
+    )
+
+    # Initialize an empty DataFrame to store the results
+    results = pd.DataFrame()
+
+    # Find the first exceeding value for both metrics
+    for metric, df in [
+        ("scaled_agg_MAE_no_scaler", scaled_agg_MAE_no_scaler),
+        ("average_MASE_no_scaler", averge_MASE_no_scaler),
+    ]:
+        df = df[
+            ~df["model_id"].isin(["Naive", "SNaive"])
+        ]  # exclude 'Naive' and 'SNaive' models
+        grouped = df.groupby(["het_type", "model_id"])
+
+        for (het_type, model_id), group in grouped:
+            group = group.sort_values("het_strength")
+            exceeding = group[group["MAE"] > 2.5]
+            if not exceeding.empty:
+                first_exceeding = exceeding.iloc[0]
+                new_data = pd.DataFrame(
+                    {
+                        "Metric": [metric],
+                        "HetType": [het_type],
+                        "ModelId": [model_id],
+                        "HetStrength": [first_exceeding["het_strength"]],
+                        "Error": [first_exceeding["MAE"]],
+                    }
+                )
+
+                results = pd.concat([results, new_data], ignore_index=True)
+
+    file_name_csv = os.path.join(tables_dir, "problematic_candidates.csv")
+    results.to_csv(file_name_csv)

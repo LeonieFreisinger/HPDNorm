@@ -96,12 +96,17 @@ def generate_any(
         if heterogeneity_type == "offset":
             offset = np.random.uniform(0, sample_upper_limit * 10 / 3)
         elif heterogeneity_type == "trend":
-            trend_gradient = np.random.uniform(0, sample_upper_limit) + 2
+            trend_gradient = np.random.uniform(
+                -sample_upper_limit * 1 / 2, sample_upper_limit * 1 / 2
+            )
         elif heterogeneity_type == "heteroscedasticity":
-            heteroscedasticity = np.random.uniform(0, sample_upper_limit * 2) + 1
+            heteroscedasticity = np.random.uniform(0, sample_upper_limit)
         elif heterogeneity_type == "structural_break":
-            structural_break_mean = np.random.uniform(0, sample_upper_limit * 2) + 1
-            structural_break_variance = np.random.uniform(0, sample_upper_limit) + 2
+            structural_break_mean = np.random.uniform(0, sample_upper_limit)
+            np.random.seed(seeds[i])
+            structural_break_variance = (
+                np.random.uniform(0, sample_upper_limit * 0.5) + 1
+            )
 
         time_series = create_time_series_data(
             series_length=series_length,

@@ -13,14 +13,14 @@ def merge_results():
     )
     save_path = os.path.join(parent_dir, "tables")
     file_name_csv = os.path.join(save_path, "results_raw_no_scaler.csv")
-    file_name_2_csv = os.path.join(save_path, "results_indi_raw_no_scaler.csv")
+    file_name_individual_csv = os.path.join(save_path, "results_indi_raw_no_scaler.csv")
     file_name_xlsx = os.path.join(save_path, "results_indi_raw_no_scaler.xlsx")
 
     # Make sure the directories exist
     os.makedirs(save_path, exist_ok=True)
 
     dfs_list = []
-    dfs_list_2 = []
+    dfs_list_individual = []
 
     for exp in os.listdir(res_path):
         exp_path = os.path.join(res_path, exp)
@@ -33,15 +33,15 @@ def merge_results():
                 # read csv
 
                 df = pd.read_csv(results_csv_path)
-                df2 = pd.read_csv(results_csv_pattern)
+                df_individual = pd.read_csv(results_csv_pattern)
 
                 # round the number to 4 decimal places
                 df = df.round(4)
-                df2 = df2.round(4)
+                df_individual = df_individual.round(4)
 
                 # add ID column
                 df["exp_id"] = exp
-                df2["exp_id"] = exp
+                df_individual["exp_id"] = exp
                 # df['data_group_id'] = data_group
                 df["scaling_level"] = df["scaling level"]
                 df = df.drop("scaling level", axis=1)
@@ -49,11 +49,13 @@ def merge_results():
 
                 # append to the list
                 dfs_list.append(df)
-                dfs_list_2.append(df2)
+                dfs_list_individual.append(df_individual)
 
     # concatenate all dataframes
     df_merged = pd.concat(dfs_list, ignore_index=True).reset_index(drop=True)
-    df_merged_2 = pd.concat(dfs_list_2, ignore_index=True).reset_index(drop=True)
+    df_merged_individual = pd.concat(
+        dfs_list_individual, ignore_index=True
+    ).reset_index(drop=True)
     df_merged = df_merged.drop("Unnamed: 0", axis=1)
     # df_merged_2 = df_merged_2.drop('Unnamed: 0', axis=1)
     # replace nan in col norm_affine and norm_type with None
@@ -70,8 +72,11 @@ def merge_results():
     df_merged["scaler"] = df_merged["scaler"].fillna("None")
     df_merged["scaler"] = df_merged["scaler"].replace("none", "None")
     df_merged["scaler"] = df_merged["scaler"].replace("no scaler", "None")
+    # sort df
+    df_merged = df_merged.sort_values(["exp_id"])
+    df_merged_individual = df_merged_individual.sort_values(["exp_id", "ID"])
 
     # write to a csv file
     df_merged.to_excel(file_name_xlsx, index=False)
     df_merged.to_csv(file_name_csv, index=False)
-    df_merged_2.to_csv(file_name_2_csv, index=False)
+    df_merged_individual.to_csv(file_name_individual_csv, index=False)
