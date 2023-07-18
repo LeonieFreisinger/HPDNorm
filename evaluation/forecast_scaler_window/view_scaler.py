@@ -26,24 +26,24 @@ def parse_exp_id(df):
     return df_exp
 
 
-def view_best_scaler_dif_to_no_scaler_for_metric_per_model_and_het_type(
+def view_best_scaler_rel_to_no_scaler_for_metric_per_model_and_het_type(
     metric, columns_to_show
 ):
     parent_dir = pathlib.Path(__file__).parent.parent.absolute()
     tables_dir = os.path.join(parent_dir, "tables")
     if "norm_type" in columns_to_show:
         file_name_csv = os.path.join(
-            tables_dir, f"view_best_scaler_type_dif_to_no_scaler_{metric}_window.csv"
+            tables_dir, f"view_best_scaler_type_rel_to_no_scaler_{metric}_window.csv"
         )
     else:
         file_name_csv = os.path.join(
-            tables_dir, f"view_best_scaler_dif_to_no_scaler_{metric}_window.csv"
+            tables_dir, f"view_best_scaler_rel_to_no_scaler_{metric}_window.csv"
         )
 
     if metric in ["average_MASE", "scaled_agg_MAE"]:
         metric_df = pd.read_csv(
             os.path.join(
-                tables_dir, f"best_scaler_dif_to_no_scaler_{metric}_window.csv"
+                tables_dir, f"best_scaler_rel_to_no_scaler_{metric}_window.csv"
             ),
         )
     else:
@@ -80,14 +80,14 @@ def view_best_scaler_dif_to_no_scaler_for_metric_per_model_and_het_type(
     df_metric_pivot.to_csv(file_name_csv)
 
 
-def plot_bar_plots_best_scaler_dif_to_no(
+def plot_bar_plots_best_scaler_rel_to_no(
     metric, metric_to_plot
 ):  # Again, we assume df_metric_pivot has been reset so multi-index is now columns
     parent_dir = pathlib.Path(__file__).parent.parent.absolute()
     tables_dir = os.path.join(parent_dir, "tables")
     figures_dir = os.path.join(parent_dir, "figures")
     file_name_png = os.path.join(
-        figures_dir, f"barplot_best_scaler_dif_to_no_scaler_{metric}_window.png"
+        figures_dir, f"barplot_best_scaler_rel_to_no_scaler_{metric}_window.png"
     )
     model_id_order = ["NP_FNN", "NP_FNN_sw", "RNN"]
     het_type_order = get_het_type_order()
@@ -95,7 +95,7 @@ def plot_bar_plots_best_scaler_dif_to_no(
     if metric in ["average_MASE", "scaled_agg_MAE"]:
         metric_df = pd.read_csv(
             os.path.join(
-                tables_dir, f"best_scaler_dif_to_no_scaler_{metric}_window.csv"
+                tables_dir, f"best_scaler_rel_to_no_scaler_{metric}_window.csv"
             ),
         )
     else:

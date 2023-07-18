@@ -9,6 +9,9 @@ def postprocess_results_indi_df(original_df):
     df = df[df["ID"] != "ALL"]
     df.loc[:, "ID"] = df["ID"].astype(int)
     df_filtered = df[["exp_id", "ID", "MAE", "RMSE", "scaler", "scaling_level"]]
+    df_filtered = df_filtered[
+        df_filtered["scaler"] != "QuantileTransformeroutput_distribution='normal'"
+    ]
     df_filtered = df_filtered.set_index(["exp_id", "ID"])
     return df_filtered
 
@@ -156,7 +159,7 @@ def calculate_best_scaler_for_metric(metric):
     best_combinations_df.to_csv(file_name_csv)
 
 
-def calculate_best_scaler_dif_to_no_scaler_for_metric(metric):
+def calculate_best_scaler_rel_to_no_scaler_for_metric(metric):
     parent_dir = pathlib.Path(__file__).parent.parent.absolute()
     tables_dir = os.path.join(parent_dir, "tables")
     if metric == "average_MASE":
@@ -169,7 +172,7 @@ def calculate_best_scaler_dif_to_no_scaler_for_metric(metric):
             index_col=["exp_id"],
         )
         file_name_csv = os.path.join(
-            tables_dir, "best_scaler_dif_to_no_scaler_average_MASE.csv"
+            tables_dir, "best_scaler_rel_to_no_scaler_average_MASE.csv"
         )
     if metric == "scaled_agg_MAE":
         metric_df = pd.read_csv(
@@ -181,7 +184,7 @@ def calculate_best_scaler_dif_to_no_scaler_for_metric(metric):
             index_col=["exp_id"],
         )
         file_name_csv = os.path.join(
-            tables_dir, "best_scaler_dif_to_no_scaler_scaled_agg_MAE.csv"
+            tables_dir, "best_scaler_rel_to_no_scaler_scaled_agg_MAE.csv"
         )
 
     idx = metric_df.index
@@ -190,11 +193,13 @@ def calculate_best_scaler_dif_to_no_scaler_for_metric(metric):
     filtered_metric_df_no_scaler = metric_df_no_scaler[
         metric_df_no_scaler.index.isin(idx)
     ]
-    metric_df_dif_to_no_scaler = filtered_metric_df_no_scaler[["MAE", "RMSE"]].subtract(
-        metric_df[["MAE", "RMSE"]]
+    metric_df_rel_to_no_scaler = (
+        filtered_metric_df_no_scaler[["MAE", "RMSE"]]
+        .subtract(metric_df[["MAE", "RMSE"]])
+        .div(filtered_metric_df_no_scaler[["MAE", "RMSE"]])
     )
-    metric_df_dif_to_no_scaler[["scaler", "scaling_level"]] = metric_df[
+    metric_df_rel_to_no_scaler[["scaler", "scaling_level"]] = metric_df[
         ["scaler", "scaling_level"]
     ]
     # Write to a csv file
-    metric_df_dif_to_no_scaler.to_csv(file_name_csv)
+    metric_df_rel_to_no_scaler.to_csv(file_name_csv)
