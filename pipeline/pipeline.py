@@ -61,6 +61,7 @@ class Pipeline:
         self.kwargs = kwargs
 
         exp_dir_name = os.path.join(self.results_dir, f"{self.pipeline_name}")
+        print("exp_dir_name:", exp_dir_name)
         data_file_name = os.path.join(exp_dir_name, "data.png")
 
         if save:

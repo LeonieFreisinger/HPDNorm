@@ -18,7 +18,7 @@ def load(path, n_samples=None, ids=None, n_ids=None):
     )
     if ids is None and n_ids is not None:
         unique_ids = df["ID"].unique()
-        ids = random.sample(list(unique_ids), k=10)
+        ids = random.sample(list(unique_ids), k=n_ids)
 
     if ids is not None:
         df = df[df["ID"].isin(ids)].reset_index(drop=True)
@@ -32,11 +32,30 @@ def load(path, n_samples=None, ids=None, n_ids=None):
 
 
 def load_EIA():
-    return load(DATA_DIR + "/eia_electricity_hourly.csv")
+    return load(
+        DATA_DIR + "/eia_electricity_hourly.csv",
+        ids=[
+            "AEC",
+            "AECI",
+            "AVA",
+            "AZPS",
+            "BANC",
+            "BPAT",
+            "CHPD",
+            "CISO",
+            "CPLE",
+            "CPLW",
+        ],
+        n_samples=26280,
+    )
 
 
 def load_London():
-    return load(DATA_DIR + "/london_electricity_hourly.csv")
+    return load(
+        DATA_DIR + "/london_electricity_hourly.csv",
+        ids=["T1", "T33", "T67", "T89", "T122", "T156", "T180", "T209", "T281", "T307"],
+        n_samples=26280,
+    )
 
 
 def load_ERCOT():
@@ -44,15 +63,21 @@ def load_ERCOT():
 
 
 def load_Australian():
-    return load(DATA_DIR + "/australian_electricity_half_hourly.csv")
+    return load(
+        DATA_DIR + "/australian_electricity_half_hourly.csv", n_ids=5, n_samples=52560
+    )
 
 
 def load_Solar():
-    return load(DATA_DIR + "/solar_10_minutes_dataset.csv")
+    return load(
+        DATA_DIR + "/solar_10_minutes_dataset.csv",
+        ids=["T1", "T19", "T34", "T59", "T66", "T83", "T91", "T111", "T124", "T134"],
+        n_samples=26280,
+    )
 
 
 def load_ETTh():
-    return load(DATA_DIR + "/ETTh_panel.csv")
+    return load(DATA_DIR + "/ETTh_panel.csv", n_ids=14, n_samples=26280)
 
 
 DATASETS = {
@@ -62,5 +87,4 @@ DATASETS = {
     "Australian": {"load": load_Australian, "freq": "30min"},
     "Solar": {"load": load_Solar, "freq": "10min"},
     "ETTh": {"load": load_ETTh, "freq": "H"},
-    "custom": {"load": load},
 }

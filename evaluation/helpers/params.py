@@ -27,6 +27,10 @@ def get_model_id_order():
     return MODEL_ID_ORDER
 
 
+def get_all_model_params():
+    return ALL_MODEL_PARAMS
+
+
 def get_het_type_order():
     return HET_TYPE_ORDER
 
@@ -67,6 +71,7 @@ ALL_MODEL_NAMES = [
 DEFAULT_SCALER = [
     "None",
     "StandardScaler",
+    "MinMaxScalerfeature_range=-0.5 0.5",
     "MinMaxScaler",
     "RobustScalerquantile_range=5 95",
     "PowerTransformer",
@@ -91,6 +96,19 @@ MODEL_ID_ORDER = [
     "RNN",
     "TF",
     "LGBM",
+]
+ALL_MODEL_PARAMS = [
+    "TP_localST",
+    "NP_localST",
+    "TP",
+    "NP_FNN_sw",
+    "NP_FNN",
+    "NP",
+    "RNN",
+    "TF",
+    "LGBM",
+    "SNaive",
+    "Naive",
 ]
 
 FULL_MODEL_NAMES = {

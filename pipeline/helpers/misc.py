@@ -4,15 +4,11 @@ from abc import ABCMeta
 
 import pandas as pd
 from pandas import Index
-from sklearn.preprocessing import (
-    FunctionTransformer,
-    MinMaxScaler,
-    PowerTransformer,
-    QuantileTransformer,
-    RobustScaler,
-    StandardScaler,
-)
-from tot.evaluation.metric_utils import calculate_metrics_by_ID_for_forecast_step
+from sklearn.preprocessing import (FunctionTransformer, MinMaxScaler,
+                                   PowerTransformer, QuantileTransformer,
+                                   RobustScaler, StandardScaler)
+from tot.evaluation.metric_utils import \
+    calculate_metrics_by_ID_for_forecast_step
 
 from pipeline.helpers.scalers import LogTransformer
 
@@ -109,7 +105,7 @@ def build_real_data_name(
     gen_fun_name,
     params_name,
 ):
-    return "{}_{}".format(
+    return "{}_{}_{}".format(
         dataset_name,
         gen_fun_name,
         params_name,
