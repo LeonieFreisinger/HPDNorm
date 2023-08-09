@@ -5,9 +5,8 @@ from pathlib import Path
 import pandas as pd
 from tot.error_utils import raise_if
 
-print(Path(__file__).parent.parent.parent.absolute())
-DATA_DIR = os.path.join(Path(__file__).parent.parent.parent.absolute(), "datasets")
 
+DATA_DIR = os.path.join(Path(__file__).parent.parent.parent.absolute(), "datasets")
 
 def load(path, n_samples=None, ids=None, n_ids=None):
     df = pd.read_csv(path)
