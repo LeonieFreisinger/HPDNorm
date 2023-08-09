@@ -147,39 +147,39 @@ def calculate_best_scaler_rel_to_no_scaler_for_metric(metric, mode):
     # Write to a csv file
     metric_df_rel_to_no_scaler.to_csv(file_name_csv)
 
-    def calculate_best_scalers_combined(metric):
-        parent_dir = pathlib.Path(__file__).parent.parent.absolute()
-        tables_dir = os.path.join(parent_dir, "tables")
-        if metric == "average_MASE":
-            best_scaler_both = pd.read_csv(
-                os.path.join(tables_dir, "best_scaler_average_MASE_both.csv"),
-                index_col=["exp_id"],
-            )
-            file_name_csv = os.path.join(
-                tables_dir, "best_scaler_average_MASE_combined.csv"
-            )
-        if metric == "scaled_agg_MAE":
-            best_scaler_both = pd.read_csv(
-                os.path.join(tables_dir, "best_scaler_scaled_agg_MAE_both.csv"),
-                index_col=["exp_id"],
-            )
-            file_name_csv = os.path.join(
-                tables_dir, "best_scaler_scaled_agg_MAE_combined.csv"
-            )
-        # Convert 'MAE' to numeric type for proper comparison
-        best_scaler_both["MAE"] = pd.to_numeric(
-            best_scaler_both["MAE"], errors="coerce"
+def calculate_best_scalers_combined(metric):
+    parent_dir = pathlib.Path(__file__).parent.parent.absolute()
+    tables_dir = os.path.join(parent_dir, "tables")
+    if metric == "average_MASE":
+        best_scaler_both = pd.read_csv(
+            os.path.join(tables_dir, "best_scaler_average_MASE_both.csv"),
+            index_col=["exp_id"],
         )
+        file_name_csv = os.path.join(
+            tables_dir, "best_scaler_average_MASE_combined.csv"
+        )
+    if metric == "scaled_agg_MAE":
+        best_scaler_both = pd.read_csv(
+            os.path.join(tables_dir, "best_scaler_scaled_agg_MAE_both.csv"),
+            index_col=["exp_id"],
+        )
+        file_name_csv = os.path.join(
+            tables_dir, "best_scaler_scaled_agg_MAE_combined.csv"
+        )
+    # Convert 'MAE' to numeric type for proper comparison
+    best_scaler_both["MAE"] = pd.to_numeric(
+        best_scaler_both["MAE"], errors="coerce"
+    )
 
-        # Sort by 'MAE'
-        best_scaler_both.sort_values("MAE", inplace=True)
+    # Sort by 'MAE'
+    best_scaler_both.sort_values("MAE", inplace=True)
 
-        # Drop duplicates by 'exp_id' and keep the first one (i.e., the one with smaller 'MAE')
-        best_scaler_both = best_scaler_both.reset_index()
-        best_scaler_both.drop_duplicates(subset="exp_id", keep="first", inplace=True)
-        best_scaler_both.set_index("exp_id", inplace=True)
-        # Reset index
-        best_scaler_both.to_csv(file_name_csv)
+    # Drop duplicates by 'exp_id' and keep the first one (i.e., the one with smaller 'MAE')
+    best_scaler_both = best_scaler_both.reset_index()
+    best_scaler_both.drop_duplicates(subset="exp_id", keep="first", inplace=True)
+    best_scaler_both.set_index("exp_id", inplace=True)
+    # Reset index
+    best_scaler_both.to_csv(file_name_csv)
 
 
 def calculate_best_scaler_rel_to_no_scaler_for_metric(metric, mode):
@@ -298,11 +298,15 @@ def calculate_all_rel_to_no_scaler_for_metric(metric):
         .subtract(metric_df[["MAE", "RMSE"]])
         .div(filtered_metric_df_no_scaler[["MAE", "RMSE"]])
     )
+    
 
     metric_df_rel_to_no_scaler = metric_df_rel_to_no_scaler.reset_index()
     metric_df = metric_df.reset_index()
+    metric_df.to_csv(temp1)
+    metric_df_rel_to_no_scaler.to_csv(temp2)
     print(metric_df_rel_to_no_scaler)
     metric_df_rel_to_no_scaler[["type", "level"]] = metric_df[["type", "level"]]
+    metric_df_rel_to_no_scaler.sort_values(['exp_id','type', 'level'], inplace=True)
     metric_df_rel_to_no_scaler.set_index("exp_id", inplace=True)
     # Write to a csv file
     metric_df_rel_to_no_scaler.to_csv(file_name_csv)

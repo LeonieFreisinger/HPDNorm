@@ -42,6 +42,11 @@ def get_full_model_names():
 def get_full_het_names():
     return FULL_HET_NAMES
 
+def get_full_dataset_names():
+    return FULL_DATASET_NAMES
+
+def get_full_norm_names():
+    return FULL_NORM_NAMES
 
 HET_STRENGTH_LIST = [
     "0.0",
@@ -112,11 +117,11 @@ ALL_MODEL_PARAMS = [
 ]
 
 FULL_MODEL_NAMES = {
-    "TP_localST": "TorchProphet (local S & T)",
-    "NP_localST": "NeuralProphet (local S & T)",
-    "TP": "TorchProphet",
+    "TP_localST": "ProphetLST",
+    "NP_localST": "NeuralProphetLST",
+    "TP": "Prophet",
     "NP": "NeuralProphet",
-    "NP_FNN": "LinearRegression",
+    "NP_FNN": "Linear Regression",
     "NP_FNN_sw": "FNN",
     "RNN": "RNN",
     "TF": "Transformer",
@@ -128,5 +133,30 @@ FULL_HET_NAMES = {
     "offset": "Offset",
     "trend": "Trend",
     "heteroscedasticity": "Heteroscedasticity",
-    "structural_break": "Strcutural Break",
+    "structural_break": "Structural Break",
+}
+FULL_DATASET_NAMES = {
+    "Australian": "Australian",
+    "EIA": "EIA",
+    "ERCOT": "ERCOT",
+    "ETTh": "ETTh",
+    "London": "Portugal",
+    "Solar": "Solar",
+}
+
+FULL_NORM_NAMES = {
+    "StandardScaler_per_time_series": "StandardScaler<sub>ts</sub>",
+    "RobustScalerquantile_range=5 95_per_time_series": "RobustScaler<sub>ts</sub>",
+    "RobustScaler_per_time_series": "RobustScaler<sub>ts</sub>",
+    "MinMaxScaler_per_time_series": "MinMaxScaler<sub>ts</sub>",
+    "PowerTransformer_per_time_series": "PowerTransform<sub>ts</sub>",
+    "LogTransformer_per_time_series":"LogTransform<sub>ts</sub>",
+    "revin_instance": "RevInstanceNorm",
+    "StandardScaler_per_dataset": "StandardScaler<sub>d</sub>",
+    "RobustScalerquantile_range=5 95_per_dataset": "RobustScaler<sub>d</sub>",
+    "RobustScaler_per_dataset": "RobustScaler<sub>d</sub>",
+    "MinMaxScaler_per_dataset": "MinMaxScaler<sub>d</sub>",
+    "PowerTransformer_per_dataset": "PowerTransform<sub>d</sub>",
+    "LogTransformer_per_dataset": "LogTransform<sub>d</sub>",
+    "revin_batch": "RevBatchNorm",
 }

@@ -5,7 +5,8 @@ from evaluation.forecast_scaler.process_scaler import (
     calculate_scaled_agg_MAE)
 from evaluation.forecast_scaler.view_scaler import (
     plot_bar_plots_best_scaler_rel_to_no,
-    view_best_scaler_rel_to_no_scaler_for_metric_per_model_and_het_type)
+    view_best_scaler_rel_to_no_scaler_for_metric_per_model_and_het_type,
+    )
 
 if __name__ == "__main__":
     merge_results()

@@ -9,6 +9,7 @@ from statsmodels.tsa.seasonal import STL, seasonal_decompose
 
 from evaluation.baseline_forecasts.parser import (extract_args_from_name,
                                                   parse_synthetic_data_files)
+from pipeline.helpers.data_loaders import load_Australian, load_EIA, load_London, load_ERCOT, load_ETTh, load_Solar
 
 
 # basic functions
@@ -96,11 +97,16 @@ def get_trend_free_variance(series: pd.Series) -> np.float64:
     # add weight
     return np.float64(var_resid)
 
+def get_trend_free_mean(series: pd.Series) -> np.float64:
+    trend, seasonal, resid = _get_STL_components(series, seasonal=13, period=24)
+    mean_resid = get_mean(resid + seasonal)
+    return np.float64(mean_resid)
 
 # weighted lumpiness
 def get_trend_free_lumpiness(series: pd.Series) -> np.float64:
     trend, seasonal, resid = _get_STL_components(series, seasonal=13, period=24)
-    lumpiness_resid = get_lumpiness(resid + seasonal)
+    # lumpiness_resid = get_lumpiness(resid + seasonal)
+    lumpiness_resid = get_lumpiness(resid)
     # add weight
     return np.float64(lumpiness_resid)
 
@@ -197,18 +203,20 @@ def calulate_per_dataset_features_for_df_dict(
     return dfs_per_dataset_features
 
 
-def exe_calulate_features():
+def exe_calulate_features_synthetic_data():
     parent_dir = pathlib.Path(__file__).parent.parent.absolute()
     tables_dir = os.path.join(parent_dir, "tables")
     df_dict_synthetic_data = parse_synthetic_data_files()
     list = [
-        get_max_level_shift,
-        get_max_var_shift,
-        get_trend_strength,
-        get_season_strength,
-        get_trend_free_variance,
-        get_trend_free_lumpiness,
-        get_stability,
+        # get_max_level_shift,
+        # get_max_var_shift,
+        # get_trend_strength,
+        # get_season_strength,
+        # get_trend_free_variance,
+        # get_trend_free_lumpiness,
+        # get_stability,
+        get_mean,
+        # get_trend_free_variance,
     ]
     all_per_dataset_features = calulate_per_dataset_features_for_df_dict(
         df_dict_synthetic_data, features_list=list
@@ -216,6 +224,38 @@ def exe_calulate_features():
     print(all_per_dataset_features)
 
     all_per_dataset_features.to_csv(
-        os.path.join(tables_dir, "all_per_dataset_features.csv")
+        os.path.join(tables_dir, "all_per_dataset_features_synthetic.csv")
     )
-    all_per_dataset_features.to_excel(os.path.join("all_per_dataset_features.xlsx"))
+    all_per_dataset_features.to_excel(os.path.join("all_per_dataset_features_synthetic.xlsx"))
+
+def exe_calulate_features_real_world_data():
+    parent_dir = pathlib.Path(__file__).parent.parent.absolute()
+    tables_dir = os.path.join(parent_dir, "tables")
+    # dataset_dir = os.path.join(pathlib.Path(__file__).parent.parent.parent.absolute(), "datasets")
+    df_dict_synthetic_data = {
+        'Australian': load_Australian(),
+        'EIA': load_EIA(),
+        'London': load_London(),
+        'ERCOT': load_ERCOT(),
+        'ETTh': load_ETTh(),
+        'Solar': load_Solar(),
+    }
+    list = [
+        # get_max_level_shift,
+        # get_max_var_shift,
+        # get_trend_strength,
+        # get_season_strength,
+        # get_trend_free_variance,
+        # get_trend_free_lumpiness,
+        # get_stability,
+        get_mean
+    ]
+    all_per_dataset_features = calulate_per_dataset_features_for_df_dict(
+        df_dict_synthetic_data, features_list=list
+    )
+    print(all_per_dataset_features)
+
+    all_per_dataset_features.to_csv(
+        os.path.join(tables_dir, "all_per_dataset_features_real_world.csv")
+    )
+    all_per_dataset_features.to_excel(os.path.join("all_per_dataset_features_real_world.xlsx"))

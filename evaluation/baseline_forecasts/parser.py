@@ -46,7 +46,7 @@ def parse_synthetic_data_files():
 
     for exp in os.listdir(res_path):
         exp_path = os.path.join(res_path, exp)
-        if os.path.isdir(exp_path):
+        if os.path.isdir(exp_path) and 'LGBM' in exp_path:
             results_csv_path = os.path.join(exp_path, "data.csv")
             if os.path.isfile(results_csv_path):
 

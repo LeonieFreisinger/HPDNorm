@@ -8,11 +8,14 @@ def create_layout():
     # palette = sns.color_palette("Set1", 16).as_hex() # Generate a color palette
     palette = px.colors.qualitative.Dark24
     palette2 = px.colors.qualitative.Alphabet
+    palette3 = px.colors.qualitative.Pastel
     het_type_indices = [0, 2, 19, 10, 22]
     model_id_indices = [0, 2, 11, 24, 17, 18, 25, 23, 14]
+    dataset_indices = [0,1,2,3,4,5,6]
 
     het_type_palette = [palette[i] for i in het_type_indices]
     model_id_palette = [palette2[i] for i in model_id_indices]
+    dataset_palette = [palette3[i] for i in dataset_indices]
 
     # Define the font for your layout
     layout_font = dict(
@@ -57,4 +60,4 @@ def create_layout():
         # You can add more attributes here as needed
     )
 
-    return layout, het_type_palette, model_id_palette
+    return layout, het_type_palette, model_id_palette, dataset_palette
