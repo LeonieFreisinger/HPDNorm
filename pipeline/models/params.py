@@ -11,7 +11,7 @@ log = logging.getLogger("experiments")
 
 
 def get_num_processes(params_name):
-    if params_name in ["TF", "RNN", "RNN_wb", "LGBM", "NP_FNN_sw_wb"]:
+    if params_name in ["TF", "RNN", "RNN_wb_in", "RNN_wb_ba", "LGBM", "NP_FNN_sw_wb"]:
         return 1
     return 10
 
@@ -20,7 +20,10 @@ def get_params_for_model(model_name, params_name):
     try:
         return PARAMS[model_name][params_name]
     except KeyError as e:
-        log.error(e, f"Invalid pre-defined params name for {model_name}. Available params: {PARAMS[model_name].keys()}")
+        log.error(
+            e,
+            f"Invalid pre-defined params name for {model_name}. Available params: {PARAMS[model_name].keys()}",
+        )
 
 
 # NeuralProphetModel pre-defined params
@@ -64,21 +67,32 @@ NP_FNN_wb = {  # NeuralProphetModel with only autoregression enabled used for wi
     "growth": "off",
     "n_lags": 24,
 }
-NP_FNN_sw_wb = (
-    {  # NeuralProphetModel with only autoregression with 1 hidden layer enabled used for window-based normalization.
-        "n_forecasts": 1,
-        "epochs": 30,
-        "global_normalization": True,
-        "normalize": "off",
-        "yearly_seasonality": False,
-        "weekly_seasonality": False,
-        "daily_seasonality": False,
-        "n_changepoints": 0,
-        "growth": "off",
-        "n_lags": 24,
-        "ar_layers": [128],
-    }
-)
+NP_FNN_sw_wb = {  # NeuralProphetModel with only autoregression with 1 hidden layer enabled used for window-based normalization.
+    "n_forecasts": 1,
+    "epochs": 30,
+    "global_normalization": True,
+    "normalize": "off",
+    "yearly_seasonality": False,
+    "weekly_seasonality": False,
+    "daily_seasonality": False,
+    "n_changepoints": 0,
+    "growth": "off",
+    "n_lags": 24,
+    "ar_layers": [128],
+}
+NP_FNN_sw = {  # NeuralProphetModel with only autoregression with 1 hidden layer enabled used for window-based normalization.
+    "n_forecasts": 1,
+    "epochs": 30,
+    "global_normalization": True,
+    "normalize": "off",
+    "yearly_seasonality": False,
+    "weekly_seasonality": False,
+    "daily_seasonality": False,
+    "n_changepoints": 0,
+    "growth": "off",
+    "n_lags": 2,
+    "ar_layers": [128],
+}
 
 # TorchProphetModel pre-defined params
 TP = {  # TorchProphetModel with global trend and global seasonality enabled.
@@ -188,6 +202,7 @@ PARAMS = {
         "NP": NP,
         "NP_localST": NP_localST,
         "NP_FNN": NP_FNN,
+        "NP_FNN_sw": NP_FNN_sw,
         "NP_FNN_wb": NP_FNN_wb,
         "NP_FNN_sw_wb": NP_FNN_sw_wb,
     },
@@ -195,12 +210,14 @@ PARAMS = {
     "LightGBMModel": {"LGBM": LGBM},
     "RNNModel": {
         "RNN": RNN,
-        "RNN_wb": RNN_wb_in,
-        "RNN_wb_nl": RNN_wb_ba,
+        "RNN_wb_in": RNN_wb_in,
+        "RNN_wb_ba": RNN_wb_ba,
     },
     "TransformerModel": {"TF": TF},
     "NaiveModel": {"Naive": Naive},
     "SeasonalNaiveModel": {"SNaive": SNaive},
 }
 
-SUPPORTED_PARAMS = reduce(lambda l1, l2: l1 + l2, [list(model.keys()) for model in PARAMS.values()])
+SUPPORTED_PARAMS = reduce(
+    lambda l1, l2: l1 + l2, [list(model.keys()) for model in PARAMS.values()]
+)

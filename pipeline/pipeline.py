@@ -1,15 +1,15 @@
 import os
 
 from neuralprophet.utils import set_log_level
+from tot.benchmark import SimpleBenchmark
+from tot.datasets import Dataset
 
-from pipeline.helpers.misc import save_results, save_params
+from pipeline.helpers.misc import save_params, save_results
 from pipeline.helpers.plotting import plot_and_save, plot_forecasts
 from pipeline.models import params_generators
 from pipeline.models.models import get_tot_model_class
-from pipeline.models.params import get_params_for_model, get_num_processes
+from pipeline.models.params import get_num_processes, get_params_for_model
 from pipeline.models.params_generators import validate_param_generator
-from tot.benchmark import SimpleBenchmark
-from tot.datasets import Dataset
 
 set_log_level("ERROR")
 
@@ -60,7 +60,8 @@ class Pipeline:
             metrics = ["MAE", "RMSE", "MASE"]
         self.kwargs = kwargs
 
-        exp_dir_name = os.path.join(self.results_dir, f"{self.pipeline_name}_{name}")
+        exp_dir_name = os.path.join(self.results_dir, f"{self.pipeline_name}")
+        print("exp_dir_name:", exp_dir_name)
         data_file_name = os.path.join(exp_dir_name, "data.png")
 
         if save:
@@ -77,7 +78,9 @@ class Pipeline:
 
         validate_param_generator(self.model_class, params_generator_name)
         params_generator = getattr(params_generators, params_generator_name)
-        model_classes_and_params = params_generator(self.model_params, self.model_class, with_scalers, **kwargs)
+        model_classes_and_params = params_generator(
+            self.model_params, self.model_class, with_scalers, **kwargs
+        )
 
         benchmark = SimpleBenchmark(
             model_classes_and_params=model_classes_and_params,
@@ -90,7 +93,13 @@ class Pipeline:
         self.results_train, self.results_test = benchmark.run(verbose=verbose)
 
         plot_forecasts(benchmark=benchmark, dir_name=exp_dir_name, plot=plot, save=save)
-        save_results(benchmark=benchmark, metrics=metrics, freq=self.freq, dir=exp_dir_name, save=save)
+        save_results(
+            benchmark=benchmark,
+            metrics=metrics,
+            freq=self.freq,
+            dir=exp_dir_name,
+            save=save,
+        )
         save_params(params=model_classes_and_params, dir_name=exp_dir_name, save=save)
 
     def summary(self):

@@ -4,17 +4,13 @@ from abc import ABCMeta
 
 import pandas as pd
 from pandas import Index
-from sklearn.preprocessing import (
-    FunctionTransformer,
-    MinMaxScaler,
-    PowerTransformer,
-    QuantileTransformer,
-    RobustScaler,
-    StandardScaler,
-)
+from sklearn.preprocessing import (FunctionTransformer, MinMaxScaler,
+                                   PowerTransformer, QuantileTransformer,
+                                   RobustScaler, StandardScaler)
+from tot.evaluation.metric_utils import \
+    calculate_metrics_by_ID_for_forecast_step
 
 from pipeline.helpers.scalers import LogTransformer
-from tot.evaluation.metric_utils import calculate_metrics_by_ID_for_forecast_step
 
 
 def save_results(benchmark, metrics, freq, dir, save):
@@ -78,21 +74,30 @@ def save_params(params, dir_name, save=True):
 def build_synth_data_name(
     data_func,
     params_name,
-    n_ts_groups,
-    amplitude_per_group,
-    offset_per_group,
-    data_trend_gradient_per_group,
-    proportion_break,
+    n_ts_groups=None,
+    amplitude_per_group=None,
+    offset_per_group=None,
+    trend_gradient_per_group=None,
+    proportion_break=None,
+    heterogeneity_type=None,
+    sample_upper_limit=None,
 ):
-    return "{}_{}_n_ts_{}_am_{}_of_{}_gr_{}_{}".format(
-        data_func,
-        params_name,
-        n_ts_groups,
-        amplitude_per_group,
-        offset_per_group,
-        data_trend_gradient_per_group,
-        proportion_break,
-    )
+    if data_func is None:
+        return "{}_{}_{}".format(
+            params_name,
+            heterogeneity_type,
+            sample_upper_limit,
+        )
+    else:
+        return "{}_{}_n_ts_{}_am_{}_of_{}_gr_{}_{}".format(
+            data_func,
+            params_name,
+            n_ts_groups,
+            amplitude_per_group,
+            offset_per_group,
+            trend_gradient_per_group,
+            proportion_break,
+        )
 
 
 def build_real_data_name(
@@ -100,7 +105,7 @@ def build_real_data_name(
     gen_fun_name,
     params_name,
 ):
-    return "{}_{}".format(
+    return "{}_{}_{}".format(
         dataset_name,
         gen_fun_name,
         params_name,
