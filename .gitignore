@@ -1,1 +1,14 @@
-/results/
+.vscode/
+results/
+results_no_scaler/
+results_scaler/
+results_window/
+results_window_mean_norm/
+results_real_world/
+results_real_world_window/
+evaluation/tables/
+evaluation/figures/
+src/
+**/__pycache__/
+datasets/
+evaluation/
