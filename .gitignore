@@ -1,1 +1,6 @@
-/results/
+.env
+.vscode/
+.idea/
+datasets/
+results/
+plauground/
