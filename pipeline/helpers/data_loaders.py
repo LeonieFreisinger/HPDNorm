@@ -25,7 +25,7 @@ def load(path, n_samples=None, ids=None, n_ids=None):
         df = df[df["ID"].isin(ids)].reset_index(drop=True)
     if n_samples is not None:
         df = (
-            df.groupby("ID")
+            df.groupby("ID", group_keys=False)
             .apply(lambda x: x.iloc[:n_samples, :].copy(deep=True))
             .reset_index(drop=True)
         )
@@ -35,9 +35,8 @@ def load(path, n_samples=None, ids=None, n_ids=None):
 def load_EIA():
     destination = DATA_DIR + "/eia_electricity_hourly.csv"
     if not os.path.exists(destination):
-        dataset = load_dataset("HPDNorm/eia_electricity_hourly")
-        for split, data in dataset.items():
-            data.to_csv(destination, index=None)
+        dataset = load_dataset("HPDNorm/eia_electricity_hourly", split="all")
+        dataset.to_csv(destination, index=None)
 
     return load(
         destination,
@@ -60,9 +59,8 @@ def load_EIA():
 def load_London():
     destination = DATA_DIR + "/london_electricity_hourly.csv"
     if not os.path.exists(destination):
-        dataset = load_dataset("HPDNorm/london_electricity_hourly")
-        for split, data in dataset.items():
-            data.to_csv(destination, index=None)
+        dataset = load_dataset("HPDNorm/london_electricity_hourly", split="all")
+        dataset.to_csv(destination, index=None)
 
     return load(
         destination,
@@ -74,9 +72,8 @@ def load_London():
 def load_ERCOT():
     destination = DATA_DIR + "/ercot_load_reduced.csv"
     if not os.path.exists(destination):
-        dataset = load_dataset("HPDNorm/ercot_load_reduced")
-        for split, data in dataset.items():
-            data.to_csv(destination, index=None)
+        dataset = load_dataset("HPDNorm/ercot_load_reduced", split="all")
+        dataset.to_csv(destination, index=None)
 
     return load(destination)
 
@@ -84,9 +81,8 @@ def load_ERCOT():
 def load_Australian():
     destination = DATA_DIR + "/australian_electricity_half_hourly.csv"
     if not os.path.exists(destination):
-        dataset = load_dataset("HPDNorm/australian_electricity_half_hourly")
-        for split, data in dataset.items():
-            data.to_csv(destination, index=None)
+        dataset = load_dataset("HPDNorm/australian_electricity_half_hourly", split="all")
+        dataset.to_csv(destination, index=None)
 
     return load(destination, n_ids=5, n_samples=52560)
 
@@ -94,9 +90,8 @@ def load_Australian():
 def load_Solar():
     destination = DATA_DIR + "/solar_10_minutes_dataset.csv"
     if not os.path.exists(destination):
-        dataset = load_dataset("HPDNorm/solar_10_minutes_dataset")
-        for split, data in dataset.items():
-            data.to_csv(destination, index=None)
+        dataset = load_dataset("HPDNorm/solar_10_minutes_dataset", split="all")
+        dataset.to_csv(destination, index=None)
 
     return load(
         destination,
@@ -108,9 +103,8 @@ def load_Solar():
 def load_ETTh():
     destination = DATA_DIR + "/ETTh_panel.csv"
     if not os.path.exists(destination):
-        dataset = load_dataset("HPDNorm/ETTh_panel")
-        for split, data in dataset.items():
-            data.to_csv(destination, index=None)
+        dataset = load_dataset("HPDNorm/ETTh_panel", split="all")
+        dataset.to_csv(destination, index=None)
 
     return load(destination, n_ids=14, n_samples=26280)
 
@@ -118,9 +112,8 @@ def load_ETTh():
 def load_WebTraffic():
     destination = DATA_DIR + "/kaggle_web_traffic_1000.csv"
     if not os.path.exists(destination):
-        dataset = load_dataset("HPDNorm/kaggle_web_traffic_1000")
-        for split, data in dataset.items():
-            data.to_csv(destination, index=None)
+        dataset = load_dataset("HPDNorm/kaggle_web_traffic_1000", split="all")
+        dataset.to_csv(destination, index=None)
 
     return load(destination)
 
@@ -128,9 +121,8 @@ def load_WebTraffic():
 def load_M5():
     destination = DATA_DIR + "/m5_aggregated_3049.csv"
     if not os.path.exists(destination):
-        dataset = load_dataset("HPDNorm/m5_aggregated_3049")
-        for split, data in dataset.items():
-            data.to_csv(destination, index=None)
+        dataset = load_dataset("HPDNorm/m5_aggregated_3049", split="all")
+        dataset.to_csv(destination, index=None)
 
     return load(destination)
 
